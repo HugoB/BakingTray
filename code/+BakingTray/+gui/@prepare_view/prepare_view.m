@@ -34,7 +34,7 @@ classdef prepare_view < BakingTray.gui.child_view
 
         jogSizeCoarseOrFine='fine' %can also be "coarse" TODO: add a radio button and callback to switch between coarse and fine 
         lastSliceThickness=0.1
-        lastCuttingSpeed=0.5
+        lastCuttingSpeed=0.3
     end
 
     properties (Hidden,Access=protected)

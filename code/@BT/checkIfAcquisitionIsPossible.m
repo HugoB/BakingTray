@@ -141,6 +141,7 @@ function [acquisitionPossible,msg] = checkIfAcquisitionIsPossible(obj)
         msgNumber=msgNumber+1;
     end
 
+
     % If using ScanImage, did the user switch on all the PMTs for the channels being saved?
     if isa(obj.scanner,'SIBT') && ~isequal(obj.scanner.channelsToAcquire,obj.scanner.getEnabledPMTs)
         obj.scanner.channelsToAcquire,obj.scanner.getEnabledPMTs

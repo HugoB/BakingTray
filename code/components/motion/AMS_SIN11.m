@@ -365,7 +365,7 @@ classdef AMS_SIN11 < linearcontroller
         end
 
         fprintf('Homing axis on AMS_SIN11')
-        obj.relativeMove(1); %move up one mm to pre-load
+        obj.relativeMove(0.5); %move up one mm to pre-load
         while obj.isMoving
           pause(0.5)
         end

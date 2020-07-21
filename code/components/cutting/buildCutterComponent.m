@@ -29,7 +29,7 @@ if ~ischar(componentName)
 end
 
 
-validComponents = {'dummyCutter','FaulhaberMCDC'}; %The available cutter components
+validComponents = {'dummyCutter','FaulhaberMCDC','FaulhaberMCDC_VOLTMOD'}; %The available cutter components
 validComponentSuperClassName = 'cutter'; %The name of the abstract class that all cutter components must inherit
 
 
@@ -41,6 +41,9 @@ switch componentName
     case 'FaulhaberMCDC'
         COMPORT = BakingTray.settings.parseComPort(varargin{1});
         component = FaulhaberMCDC(COMPORT);
+    case 'FaulhaberMCDC_VOLTMOD'
+        COMPORT = BakingTray.settings.parseComPort(varargin{1});
+        component = FaulhaberMCDC_VOLTMOD(COMPORT);
     otherwise
         fprintf('ERROR: unknown cutter component "%s" SKIPPING BUILDING\n', componentName)
         component=[];

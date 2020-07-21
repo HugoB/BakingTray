@@ -45,6 +45,10 @@ switch componentName
         COMPORT = BakingTray.settings.parseComPort(varargin{1});
         component = chameleon(COMPORT);
         return
+    case 'chameleonMPX'
+        COMPORT = BakingTray.settings.parseComPort(varargin{1});
+        component = chameleonMPX(COMPORT);
+        return
     otherwise
         fprintf('ERROR: unknown laser component "%s" SKIPPING BUILDING\n', componentName)
         component=[];

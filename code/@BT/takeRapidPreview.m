@@ -46,15 +46,15 @@ function takeRapidPreview(obj)
 
 
     if strcmp(obj.scanner.scannerType,'linear')
-        obj.scanner.setImageSize(128); %Set pixels per line, the method takes care of the rest
+        obj.scanner.setImageSize(256); %Set pixels per line, the method takes care of the rest
     else
         obj.scanner.setImageSize(256); %Set pixels per line, the method takes care of the rest
     end
 
     % This is a nasty hack for ensuring fast scanning galvos proceeds at a reasonable frame rate
     if isa(obj.scanner, 'SIBT') && strcmp(obj.scanner.scannerType,'linear')
-        obj.scanner.hC.hScan2D.pixelBinFactor=8;
-        obj.scanner.hC.hScan2D.sampleRate=1.25E6;
+        obj.scanner.hC.hScan2D.pixelBinFactor=1;
+        obj.scanner.hC.hScan2D.sampleRate=0.4E6;
     end
 
 

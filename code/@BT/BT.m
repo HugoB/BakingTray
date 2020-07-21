@@ -246,7 +246,8 @@ classdef BT < loghandler
 
             success=obj.moveXto(xPos) & obj.moveYto(yPos);
             if success
-                obj.logMessage(inputname(1),dbstack,3,sprintf('moving X to %0.3f and Y to %0.3f',xPos,yPos))
+                obj.logMessage(inputname(1),dbstack,3,sprintf('moving X to %0.3f and Y to %0.3f, laser status: %s',xPos,yPos,obj.laser.returnLaserStats))
+                pause(0.25) % can freeze during preview without this
             end
 
             if blocking && success
