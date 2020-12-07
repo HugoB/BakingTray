@@ -2,4 +2,6 @@
 *.asv
 *.DS_Store
 Untitled.m
+Plottileposerror.m
+code/@BT/checkIfAcquisitionIsPossible.m
 startup_bt.m
