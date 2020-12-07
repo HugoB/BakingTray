@@ -365,6 +365,7 @@ classdef BT < loghandler
             if success
                 obj.logMessage(inputname(1),dbstack,3,sprintf('moving X to %0.3f and Y to %0.3f, laser status: %s',xPos,yPos,obj.laser.returnLaserStats))
                 pause(0.25) % can freeze during preview without this
+            end
             if nargout>0
                 varargout{1}=success;
             end
