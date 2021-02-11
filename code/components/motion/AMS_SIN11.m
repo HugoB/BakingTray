@@ -381,7 +381,7 @@ classdef AMS_SIN11 < linearcontroller
         obj.sendAndReceiveSerial([obj.axID,'O0']); %Set this as zero (home)
 
         obj.stageRefCompleted=true;
-        obj.axisPosition %Ensures the stage position property is up to date
+        obj.axisPosition; %Ensures the stage position property is up to date
       end %reference stage
 
       function motorHomed=isStageReferenced(obj)
