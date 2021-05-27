@@ -24,7 +24,6 @@ classdef SIBT < scanner
     end
 
     properties (Hidden)
-        defaultShutterIDs %The default shutter IDs used by the scanner
         maxStripe=1; %Number of channel window updates per second
         listeners={}
         armedListeners={} %These listeners are enabled only when the scanner is "armed" for acquisition
@@ -80,9 +79,6 @@ classdef SIBT < scanner
             obj.hC=API;
 
             fprintf('\n\nStarting SIBT interface for ScanImage\n')
-
-            %Log default state of settings so we return to these when disarming, as we will assume control over the shutter
-            obj.defaultShutterIDs = obj.hC.hScan2D.mdfData.shutterIDs;
 
 
             % Add ScanImage-specific listeners
@@ -148,7 +144,6 @@ classdef SIBT < scanner
             end
 
             obj.hC.extTrigEnable=0;
-            obj.hC.hScan2D.mdfData.shutterIDs=obj.defaultShutterIDs; %re-enable shutters
             obj.disableArmedListeners;
             obj.disableTileSaving
 
@@ -175,6 +170,17 @@ classdef SIBT < scanner
             acquiring = ~strcmp(obj.hC.acqState,'idle');
             obj.isScannerAcquiring=acquiring;
         end %isAcquiring
+
+
+        function leaveResonantScannerOn(obj)
+            % If this is a resonant system, turn on the scanner for the rest of the acqiosotion.
+            % This method is called by armScanner and possibly outside of the SIBT class also
+            if strcmpi(obj.scannerType, 'resonant')
+                % This will only be turned off again when the teardown method is run
+                obj.hC.hScan2D.keepResonantScannerOn=obj.leaveResonantScannerOnWhenArmed;
+            end
+        end %leaveResonantScannerOn
+
 
     end %Close of main methods block
 
@@ -285,7 +291,7 @@ classdef SIBT < scanner
             if obj.verbose
                 fprintf('Hit SIBT.getChannelsToAcquire\n')
             end
-            theseChans = obj.hC.hChannels.channelSave;
+            theseChans = obj.hC.hChannels.channelSave(:);
 
             if ~isequal(obj.channelsToSave,theseChans)
                 if obj.verbose
@@ -293,15 +299,14 @@ classdef SIBT < scanner
                 end
                 %Then something has changed
                 obj.flipScanSettingsChanged
-                obj.channelsToSave = theseChans(:); %store the currently selected channels to save
+                obj.channelsToSave = theseChans; %store the currently selected channels to save
             end
 
         end %getChannelsToAcquire
 
 
         function theseChans = getChannelsToDisplay(obj)
-            theseChans = obj.hC.hChannels.channelDisplay;
-            theseChans = theseChans(:);
+            theseChans = obj.hC.hChannels.channelDisplay(:);
         end %getChannelsToDisplay
 
 
@@ -396,10 +401,7 @@ classdef SIBT < scanner
 
         function verStr = getVersion(obj)
             % Return a string listing the current version of ScanImage and current version of MATLAB
-            verStr=sprintf('ScanImage v%s.%s on MATLAB %s', ...
-                obj.hC.VERSION_MAJOR, ...
-                obj.hC.VERSION_MINOR, ...
-                version);
+            verStr=sprintf('%s on MATLAB %s', obj.hC.version, version);
         end % getVersion
 
 
@@ -409,7 +411,13 @@ classdef SIBT < scanner
             % SIBT.versionGreaterThan(obj,verToTest)
             %
             % Inputs
-            % verToTest - should be in the format '5.6' or '5.6.1'
+            % verToTest - should be in the format '5.6' or '5.6.1' or
+            % '2020.0'
+            %
+            % Note: this method does not know what to do with the update
+            % mumber from SI Basic. So 2020.1 is OK but 2020.1.4 won't 
+            % produce correct results
+ 
             isGreater = nan;
             if ~ischar(verToTest)
                 return
@@ -420,12 +428,18 @@ classdef SIBT < scanner
                 verToTest = [verToTest,'.0'];
             end
 
-            % Turn string into a nunber
+            % Turn string into a number
             verToTestAsNum = str2num(strrep(verToTest,'.',''));
 
             % Current version
             curVersion = [obj.hC.VERSION_MAJOR,obj.hC.VERSION_MINOR];
-            curVersionAsNum = str2num(strrep(curVersion,'.','')); 
+            if ischar(curVersion(1))
+                % Likely this a free release
+                curVersionAsNum = str2num(strrep(curVersion,'.',''));
+            else
+                % Likely this is Basic or Premium
+                curVersionAsNum = curVersion(1)*10 + curVersion(2);
+            end
 
             isGreater = curVersionAsNum>verToTestAsNum;
         end % versionGreaterThan
@@ -583,13 +597,14 @@ classdef SIBT < scanner
 
 
     methods (Hidden) %The following are hidden methods specific to SIBT
+
         function lastFrameNumber = getLastFrameNumber(obj)
             % Returns the number of frames acquired by the scanner.
             % In this case it returns the value of "Acqs Done" from the ScanImage main window GUI. 
             lastFrameNumber = obj.hC.hDisplay.lastFrameNumber;
             %TODO: does it return zero if there are no data yet?
             %TODO: turn into a listener that watches lastFrameNumber
-        end
+        end %getLastFrameNumber
 
 
         function enableArmedListeners(obj)

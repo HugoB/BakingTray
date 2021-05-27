@@ -314,7 +314,7 @@ classdef (Abstract) scanner < handle & loghandler
         % 
         % Reads the settings YML in the BakingTray settings location. The file is callsed "frameSizes.yml"
         % It describes the frame sizes and stitching parameters. 
-        % See: https://github.com/BaselLaserMouse/BakingTray/wiki/Achieving-high-stitching-accuracy
+        % See: https://github.com/SainsburyWellcomeCentre/BakingTray/wiki/Achieving-high-stitching-accuracy
         % This method is run by the main view class. It should populate the frameSizeSettings property
         % with the correct information. See also view.importFrameSizeSettings
         %
@@ -359,7 +359,15 @@ classdef (Abstract) scanner < handle & loghandler
         % nFramesToAverage - must be a >0 scalar
         %
 
-        
+        leaveResonantScannerOn(obj)
+        % leaveResonantScannerOn
+        %
+        % If a resonant scanner is present it is turned on 
+        %
+        % Inputs
+        % None
+
+
      end % close abstract methods
 
      % The following concrete methods are shared by all scanner classes
