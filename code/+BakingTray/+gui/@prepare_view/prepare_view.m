@@ -506,6 +506,7 @@ classdef prepare_view < BakingTray.gui.child_view
         stopAllAxes(obj,~,~)
         toggleEnable(obj,toggleState)
         autoTrim(obj,~,~)
+        resetBladeIfNeeded(obj)
     end %Methods
 
 

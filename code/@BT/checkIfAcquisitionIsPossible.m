@@ -67,9 +67,17 @@ function [acquisitionPossible,msg] = checkIfAcquisitionIsPossible(obj,isBake)
         msgNumber=msgNumber+1;
     end
 
-
+    % Check if PMT auto power on is selected. Try to turn it off but if
+    % this fails we make the user do it. 
+    if obj.scanner.disablePMTautoPower == false
+        msgPMT = 'Uncheck PMT auto-on. PMTs will be turned off automatically when Bake completes.\n';
+        msg = sprintf('%s%d) %s\n', msg, msgNumber, msgPMT);
+        msgNumber=msgNumber+1;
+    end
+    
     %If a laser is connected, check it is ready
     if obj.isLaserConnected
+        obj.laser.isPoweredOn %Sometimes laser claims it is off when it is not. This sesms to reset it.
         [isReady,msgLaser]=obj.laser.isReady;
         if ~isReady
             msg = sprintf('%s%d) The laser is not ready: %s\n', msg, msgNumber, msgLaser);

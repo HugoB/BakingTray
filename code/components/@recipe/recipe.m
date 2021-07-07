@@ -299,8 +299,8 @@ classdef recipe < handle
             % tiles in X and Y. If this is an auto-ROI, the result is the number
             % of rows in BT.currentTilePattern. Of course that means one must have
             % have updated the current tile pattern before running this!
-            if strcmp(obj.mosaic.scanmode,'tiled: auto-ROI')
-                numTiles = size(obj.parent.currentTilePattern,1);
+            if strcmp(obj.mosaic.scanmode,'tiled: auto-ROI')                
+                numTiles = size(obj.parent.currentTilePattern,1);                
             elseif strcmp(obj.mosaic.scanmode,'tiled: manual ROI')
                 numTiles = obj.NumTiles.X * obj.NumTiles.Y ;
             end
